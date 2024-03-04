@@ -14,81 +14,186 @@
 extern bool isQuit;
 extern bool isGameOver;
 extern bool notPlaying;
-extern double bet;
-extern double balance;
-extern int turn;
-extern int numOptions;
-extern int newCards;
-extern int playerTotal;
-extern int dealerTotal;
-extern int values[52];
+extern int functionNumber;
 
-extern SDL_Texture* betTexture;
-extern SDL_Texture* balanceTexture;
-extern SDL_Texture* hiddenCard;
-extern SDL_Texture* firstDealerCard;
-extern SDL_Texture* hitTexture;
-extern SDL_Texture* standTexture;
-extern SDL_Texture* doubleDTexture;
-extern SDL_Texture* surrenderTexture;
-extern SDL_Texture* splitTexture;
+extern std::vector<SDL_Surface*> surfaceQ;
+extern std::vector<SDL_Texture*> textureQ;
+extern std::vector<SDL_Rect> rectQ;
+//CLASSES
 
-extern std::vector<int> split_vals1;
-extern std::vector<std::string> split_names1;
-extern std::vector<SDL_Rect> split_rects1;
+    //Deck variables
+    class deckClass 
+    {
+        public:
 
-extern std::vector<int> split_vals2;
-extern std::vector<std::string> split_names2;
-extern std::vector<SDL_Rect> split_rects2;
+        int values[52];
+        std::vector<std::string> names;
 
-extern std::string names[52];
-extern std::vector<int> player_vals;
-extern std::vector<std::string> player_names;
-extern std::vector<int> dealer_vals;
-extern std::vector<std::string> dealer_names;
+        std::vector<SDL_Texture*> textures;
+        std::vector<SDL_Surface*> surfaces;
+        std::vector<SDL_Rect> rects;
+    };
 
-extern std::vector<SDL_Texture*> playerCardTextures;
-extern std::vector<SDL_Surface*> playerCardSurfaces;
-extern std::vector<SDL_Rect> playerCardRects;
+    //Players' card variables
+    class playerClass 
+    {
+        public:
+        //Graphial Variables
+        SDL_Texture* firstCardTexture;
+        std::vector<SDL_Texture*> textures;
+        std::vector<SDL_Surface*> surfaces;
+        std::vector<SDL_Rect> rects;
 
-extern std::vector<SDL_Texture*> dealerCardTextures;
-extern std::vector<SDL_Surface*> dealerCardSurfaces;
-extern std::vector<SDL_Rect> dealerCardRects;
+        //Variables
+        std::vector<int> values;
+        std::vector<std::string> names;
 
-extern std::vector<SDL_Texture*> allTextures;
-extern std::vector<SDL_Surface*> allSurfaces;
-extern std::vector<SDL_Rect> allRects;
+        //Variables
+        int total;
+        int newCards;
+    };
 
-extern SDL_Color white;
-extern SDL_Window* window;
-extern SDL_Renderer* renderer;
-extern TTF_Font* font; 
+    //Game variables
+    class gameClass 
+    {
+        public:
+        SDL_Color white = {255,255,255,255};
+        SDL_Color red = {255,0,0,255};
+        std::string selectorString = ">";
+        int selectorPos = 0;
+        std::string inputString = "";
+        //Graphical Variables
+        //Title Screen
+        SDL_Texture* titleTexture = nullptr;
+        SDL_Texture* pressEnterTexture = nullptr;
+        SDL_Texture* blankTexture = nullptr;
+        
+        SDL_Rect titleRect;
+        SDL_Rect pressEnterRect;
 
-int calculateTextWidth(std::string text);
-bool isConvertibleToDouble(std::string str);
-std::string toStringWithPrecision(const double value, const int n);
+        //Bet Prompt Screen
+        SDL_Texture* balanceTexture = nullptr; //Also used in Game Screen
+        SDL_Texture* betPromptTexture = nullptr;
+        SDL_Texture* invalidTexture = nullptr;
+        SDL_Texture* underscoreTexture = nullptr;
+        SDL_Texture* inputTexture = nullptr;
+        
+        SDL_Rect balanceRect;
+        SDL_Rect betPromptRect;
+        SDL_Rect invalidRect;
+        SDL_Rect underscoreRect;
+        SDL_Rect inputRect;
 
-void showStartMenu(SDL_Renderer* renderer);
-void promptForBet(SDL_Renderer* renderer, double& balance, double& bet);
-SDL_Surface* cardSurface(std::string cardName);
-SDL_Texture* cardTexture(SDL_Renderer* renderer, SDL_Surface* cardSurface);
-SDL_Texture* renderText(const std::string& message, const std::string& fontFile, SDL_Color color, int fontSize, SDL_Renderer* renderer);
+        //Game Screen
+        SDL_Texture* selectorTexture = nullptr;
+        SDL_Texture* betTexture = nullptr;
+        SDL_Texture* youTexture = nullptr;
+        SDL_Texture* dealerTexture = nullptr;
 
-void showCards(SDL_Renderer* renderer, std::vector<std::string> player_names, std::vector<std::string> dealer_names, SDL_Texture* &hiddenCard, SDL_Texture* &firstDealerCard,  std::vector<SDL_Texture*>& playerCardTextures, std::vector<SDL_Surface*>& playerCardSurfaces, std::vector<SDL_Rect>& playerCardRects,
- std::vector<SDL_Texture*>& dealerCardTextures, std::vector<SDL_Surface*>& dealerCardSurfaces, std::vector<SDL_Rect>& dealerCardRects, std::vector<SDL_Texture*>& allTextures, std::vector<SDL_Surface*>& allSurfaces, std::vector<SDL_Rect>& allRects);
+        SDL_Texture* hiddenCardTexture = nullptr;
+        SDL_Surface* hiddenCardSurface = nullptr;
 
-void gameText(SDL_Renderer* renderer, double balance, SDL_Texture* &betTexture, SDL_Texture* &balanceTexture, std::vector<SDL_Texture*>& allTextures, std::vector<SDL_Surface*>& allSurfaces, std::vector<SDL_Rect>& allRects);
-void showPrompt(SDL_Renderer* renderer, SDL_Texture* &hitTexture, SDL_Texture* &standTexture, SDL_Texture* &doubleDTexture, SDL_Texture* &surrenderTexture, SDL_Texture* &splitTexture, std::vector<SDL_Texture*>& allTextures, std::vector<SDL_Surface*>& allSurfaces, std::vector<SDL_Rect>& allRects, std::vector<int> player_vals, int& numOptions, std::vector<int>& dealer_vals);
-void gameTexturesCopy(SDL_Renderer* renderer, std::vector<SDL_Texture*> allTextures, std::vector<SDL_Surface*> allSurfaces, std::vector<SDL_Rect> allRects);
+        SDL_Texture* firstDealerCardTexture = nullptr;
+        SDL_Surface* firstDealerCardSurface = nullptr;
+        
+        SDL_Rect youRect;
+        SDL_Rect dealerRect;
+        SDL_Rect selectorRect;
+        SDL_Rect betRect;
+        SDL_Rect hiddenCardRect;
+        SDL_Rect firstDealerCardRect = hiddenCardRect;
 
-void game(SDL_Renderer* renderer, double& balance, double& bet, int& playerTotal, int& dealerTotal, std::vector<SDL_Texture*>& allTextures, std::vector<SDL_Surface*>& allSurfaces, std::vector<SDL_Rect>& allRects, 
-bool &notPlaying, bool &hitbool, bool &standbool, bool &doubleDownbool, bool &splitbool, bool &surrenderbool);
+        //Variables
+        bool isQuit = false;
+        bool isGameOver = false;
+        bool notPlaying = false;
+    
+        bool hitbool = false;
+        bool standbool = false;
+        bool doublebool = false;
+        bool surrenderbool = false;
+        bool splitbool = false;
 
-template<size_t N>
-void random_array(int (&randoms)[N], int int_limit);
+        int numOptions = 0;
+        int turn = 0;
+        int newCards = 0;
+        Uint32 lastToggle = 0;
 
-void print_deck(int values[52], std::string names[52]);
-void initial_assignment(int (&values)[52], std::string (&names)[52]);
-void shuffle(int (&values)[52], std::string (&names)[52]);
-void initial_deal(int (&values)[52], std::string (&names)[52], int& playerTotal, int& dealerTotal, std::vector<int>& player_vals, std::vector<std::string>& player_names, std::vector<int>& dealer_vals, std::vector<std::string>& dealer_names);
-void hit(int (&values)[52], std::string (&names)[52], int& total, std::vector<int>& vals, std::vector<std::string>& nams, int& newCards);
+        double balance = 1000.00;
+        double bet = 0.00;
+    };
+
+    //Split variables
+    class splitClass 
+    {
+        public:
+        //Graphical Variables
+        std::vector<SDL_Texture*> topTextures;
+        std::vector<SDL_Surface*> topSurfaces;
+        std::vector<SDL_Rect> topRects;
+
+        std::vector<SDL_Texture*> bottomTextures;
+        std::vector<SDL_Surface*> bottomSurfaces;
+        std::vector<SDL_Rect> bottomRects;
+
+        //Variables
+        std::vector<int> topValues;
+        std::vector<std::string> topNames;
+
+        std::vector<int> bottomValues;
+        std::vector<std::string> bottomNames;
+
+        int topTotal;
+        int bottomTotal;
+    };
+
+    class optionsClass 
+    {
+        public:
+        //Textures
+        SDL_Texture* hitTexture = nullptr;
+        SDL_Texture* standTexture = nullptr;
+        SDL_Texture* doubleDTexture = nullptr;
+        SDL_Texture* surrenderTexture = nullptr;
+        SDL_Texture* splitTexture = nullptr;
+
+        SDL_Rect hitRect;
+        SDL_Rect standRect;
+        SDL_Rect doubleDRect;
+        SDL_Rect surrenderRect;
+        SDL_Rect splitRect;
+    };
+
+    extern deckClass deck;
+    extern playerClass player;
+    extern playerClass dealer;
+    extern gameClass gameObject;
+    extern splitClass split;
+    extern optionsClass options;
+
+
+//SECONDARY FUNCTIONALITY TEXTURES
+    int calculateTextWidth(std::string text);
+    bool isConvertibleToDouble(std::string str);
+    std::string toStringWithPrecision(const double value, const int n);
+    SDL_Surface* cardSurface(std::string cardName);
+    SDL_Texture* cardTexture(SDL_Renderer* renderer, SDL_Surface* cardSurface);
+    SDL_Texture* renderText(const std::string& message, const std::string& fontFile, SDL_Color color, int fontSize, SDL_Renderer* renderer);
+
+void createTextures(SDL_Renderer* renderer, gameClass& gameObject, optionsClass& options);
+void updateQueue(SDL_Renderer* renderer);
+void presentQueue(SDL_Renderer* renderer, std::vector<SDL_Texture*>& textureQ, std::vector<SDL_Rect*>& rectQ);
+void toggleText(SDL_Renderer* renderer, SDL_Texture* &flashingText, gameClass& gameObject, Uint32 &lastToggle, int &functionNumber);
+
+void showStartMenu(SDL_Renderer* renderer); 
+void promptForBet(SDL_Renderer* renderer);  
+void game(SDL_Renderer* renderer);
+//GAME LOGIC FUNCTIONS
+    template<size_t N>
+    void random_array(int (&randoms)[N], int int_limit);
+
+    void print_deck();
+    void initial_assignment(deckClass& deck);
+    void shuffle();
+    void initial_deal();
+    void hit(playerClass& player_dealer);

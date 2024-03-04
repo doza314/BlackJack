@@ -1,5 +1,6 @@
 #include "Blackjack.hpp"
 #include <string>
+
 //Variable Initialization 
 SDL_Window* window = nullptr;
 SDL_Renderer* renderer = nullptr;
@@ -8,117 +9,84 @@ TTF_Font* font = nullptr;
 bool isQuit = false;
 bool isGameOver = false;
 bool notPlaying = false;
+int functionNumber = 0;
 
-SDL_Color white = {255,255,255,255};
-double balance = 1000.00;
-double bet;
-int turn = 0;
-int numOptions = 0;
-bool hitbool;
-bool standbool;
-bool doubleDownbool = false;
-bool splitbool = false;
-bool surrenderbool;
-int newCards = 0;
-int playerTotal = 0;
-int dealerTotal = 0;
-int values[52];
+//Render Queue
+std::vector<SDL_Surface*> surfaceQ;
+std::vector<SDL_Texture*> textureQ;
+std::vector<SDL_Rect> rectQ;
 
-SDL_Texture* betTexture = nullptr;
-SDL_Texture* balanceTexture = nullptr;
-SDL_Texture* hiddenCard = nullptr;
-SDL_Texture* firstDealerCard = nullptr;
-SDL_Texture* hitTexture = nullptr;
-SDL_Texture* standTexture = nullptr;
-SDL_Texture* doubleDTexture = nullptr;
-SDL_Texture* surrenderTexture = nullptr;
-SDL_Texture* splitTexture = nullptr;
 
-std::string names[52];
-std::vector<int> player_vals;
-std::vector<std::string> player_names;
-std::vector<int> dealer_vals;
-std::vector<std::string> dealer_names;
+gameClass gameObject;  //Responsible for the game states and textures
 
-std::vector<int> split_vals1;
-std::vector<std::string> split_names1;
-std::vector<SDL_Rect> split_rects1;
+deckClass deck; //Responsible for the deck
 
-std::vector<int> split_vals2;
-std::vector<std::string> split_names2;
-std::vector<SDL_Rect> split_rects2;
+playerClass player;  //Responsible for player's cards
 
-std::vector<SDL_Texture*> playerCardTextures;
-std::vector<SDL_Surface*> playerCardSurfaces;
-std::vector<SDL_Rect> playerCardRects;
+playerClass dealer;  //Responsible for dealer's cards
 
-std::vector<SDL_Texture*> dealerCardTextures;
-std::vector<SDL_Surface*> dealerCardSurfaces;
-std::vector<SDL_Rect> dealerCardRects;
+optionsClass options; //Responsible for the options textures
 
-std::vector<SDL_Texture*> allTextures;
-std::vector<SDL_Surface*> allSurfaces;
-std::vector<SDL_Rect> allRects;
+splitClass split; //Responsible for the split cards
 
 int main() {
     srand(time(NULL));
     
-    //Initializing SDL
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
-        return 1;
-    }
-    //Initializing SDL_ttf
-    if (TTF_Init() == -1) {
-        std::cerr << "Failed to initialize SDL_ttf: " << TTF_GetError() << std::endl;
-        return 1;
-    }
-    //Creating the window
-    window = SDL_CreateWindow("Blackjack", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_SHOWN);
-    if (window == nullptr) {
-        std::cout << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
-        return 1;
-    }
+   
+        //Start up SDL and create window
 
-    // Create renderer for window
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if (renderer == nullptr) {
-        std::cout << "Renderer could not be created! SDL_Error: " << SDL_GetError() << std::endl;
-        return 1;
-    }
+            //Initializing SDL
+            if (SDL_Init(SDL_INIT_VIDEO) < 0) 
+            {
+                std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
+                return 1;
+            }
+            //Initializing SDL_ttf
+            if (TTF_Init() == -1) 
+            {
+                std::cerr << "Failed to initialize SDL_ttf: " << TTF_GetError() << std::endl;
+                return 1;
+            }
+            //Creating the window
+            window = SDL_CreateWindow("Blackjack", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_SHOWN);
+            if (window == nullptr) 
+            {
+                std::cout << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
+                return 1;
+            }
+
+            // Create renderer for window
+            renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+            if (renderer == nullptr) {
+                std::cout << "Renderer could not be created! SDL_Error: " << SDL_GetError() << std::endl;
+                return 1;
+            }
+
+   initial_assignment(deck);
+   shuffle();
+   //initial_deal();
+
+    //Initital texture creation
+    createTextures(renderer, gameObject, options);
         
+    //Main loop
     while (!isQuit) {
     //Start menu
     showStartMenu(renderer);
     
     // Bet Prompt
-    promptForBet(renderer, balance, bet); 
-    initial_assignment(values, names);
-    shuffle(values, names);
-    initial_deal(values, names, playerTotal, dealerTotal, player_vals,  player_names, dealer_vals, dealer_names);
+    promptForBet(renderer); 
 
-    std::cout << "cards/" <<  player_names[0] << ".png" << std::endl;
-    std::cout << "cards/" <<  player_names[1] << ".png" << std::endl;
-    std::cout << "cards/" <<  dealer_names[0] << ".png" << std::endl;
-    std::cout << "cards/" <<  dealer_names[1] << ".png" << std::endl;
+    //Game Initialization
+    initial_deal();
     
-    //Game
-    while (!notPlaying) {
-        game(renderer, balance, bet, playerTotal, dealerTotal, allTextures, allSurfaces, allRects,
-        notPlaying, hitbool, standbool, doubleDownbool, splitbool, surrenderbool);
-    }
-        
     
+    //Main game screen
+    game(renderer);
+
+    //Results
+    //playAgainScreen(renderer, gameObject, deck, player, dealer, options, split);
     }
-
-    //Initial assignment, shuffling, and dealing
-    /*
-    initial_assignment(values, names);
-    shuffle(values, names);
-    initial_deal(values, names, player_vals, player_names, dealer_vals, dealer_names);
-    */
-
-    //print_deck(values, names);
 
     return 0;
 }
