@@ -188,12 +188,13 @@ void toggleText(SDL_Renderer* renderer, SDL_Texture* &flashingText, gameClass& g
 void showStartMenu(SDL_Renderer* renderer); 
 void promptForBet(SDL_Renderer* renderer);  
 void game(SDL_Renderer* renderer);
+
 //GAME LOGIC FUNCTIONS
     template<size_t N>
     void random_array(int (&randoms)[N], int int_limit);
 
     void print_deck();
-    void initial_assignment(deckClass& deck);
+    void initial_assignment(SDL_Renderer* renderer, deckClass& deck);
     void shuffle();
-    void initial_deal();
+    void initial_deal(deckClass);
     void hit(playerClass& player_dealer);

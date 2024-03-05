@@ -62,7 +62,7 @@ int main() {
                 return 1;
             }
 
-   initial_assignment(deck);
+   initial_assignment(renderer, deck);
    shuffle();
    //initial_deal();
 
@@ -78,7 +78,7 @@ int main() {
     promptForBet(renderer); 
 
     //Game Initialization
-    initial_deal();
+    initial_deal(deck);
     
     
     //Main game screen

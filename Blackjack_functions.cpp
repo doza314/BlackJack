@@ -130,27 +130,12 @@ void createTextures(SDL_Renderer* renderer, gameClass& gameObject, optionsClass&
         options.hitRect = {100, 300, 42, 50};
         options.standRect = {100, 350, 70, 50};
         options.doubleDRect = {100, 400, 154, 50};
-        options.surrenderRect = {100, 500, 70, 50};
-        options.splitRect = {100, 450, 126, 50};
+        options.surrenderRect = {100, 450, 126, 50};
+        options.splitRect = {100, 500, 70, 50};
 
     //Deck Textures
     gameObject.hiddenCardSurface = cardSurface("hidden");
     gameObject.hiddenCardTexture = cardTexture(renderer, gameObject.hiddenCardSurface);
-
-    
-    //Assign textures to each card in deck
-    SDL_Surface* surface;
-    SDL_Texture* texture;
-    for (int i = 0; i < 52; i++) 
-    {  
-        surface = cardSurface(deck.names[i]);
-        texture = cardTexture(renderer, surface);
-
-      deck.surfaces.push_back(surface);
-      deck.textures.push_back(texture);
-    }
-    
-    
 }
 
 /**Function numbers
@@ -222,18 +207,21 @@ void updateQueue(SDL_Renderer* renderer)
             textureQ.push_back(options.surrenderTexture); //"Surrender" in position 8
             rectQ.push_back(options.surrenderRect);
 
-            textureQ.push_back(options.splitTexture); //"Split" in position 9
-            rectQ.push_back(options.splitRect);
-        
-        
-        
-        for (int i = 0; i < player.textures.size(); i++) {
+            if (gameObject.numOptions == 5) 
+            {
+                textureQ.push_back(options.splitTexture); //"Split" in position 9
+                rectQ.push_back(options.splitRect);
+            }
+            
+        for (int i = 0; i < player.textures.size(); i++)
+         {
                 std::cout << "Player:" << std::endl;
                 std::cout << player.rects[i].x << " " << player.rects[i].y << std::endl;
                 textureQ.push_back(player.textures[i]);
                 rectQ.push_back(player.rects[i]);
             }   
-            for (int i = 0; i < dealer.textures.size(); i++) {
+            for (int i = 0; i < dealer.textures.size(); i++) 
+            {
 
                 std::cout << "Dealer:" << std::endl;
                 std::cout << dealer.rects[i].x << " " << dealer.rects[i].y << std::endl;
@@ -309,7 +297,7 @@ void toggleText(SDL_Renderer* renderer, SDL_Texture* &flashingText, gameClass& g
 
 
 
-/////////////////////////////////////////////////////////////////////////////////FUCKED UP CODE BE CAREFUL/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////MAIN LOOOP/////////////////////////////////////////////////////////////////////////////////
 
 //Start Menu
 void showStartMenu(SDL_Renderer* renderer) 
@@ -473,7 +461,7 @@ void game(SDL_Renderer* renderer)
     {
         gameObject.numOptions = 5;
     }
-    else
+    else if (player.values[0] != player.values[1])
     {
         gameObject.numOptions = 4;
     }
@@ -505,7 +493,7 @@ void game(SDL_Renderer* renderer)
                         rectQ[0] = gameObject.selectorRect;
                         presentQueue(renderer, textureQ, rectQ);
                     }
-                    if (event.key.keysym.sym == SDLK_DOWN && gameObject.selectorPos <= gameObject.numOptions - 1)
+                    if (event.key.keysym.sym == SDLK_DOWN && gameObject.selectorPos < gameObject.numOptions - 1)
                     {
                         gameObject.selectorPos ++;
                         gameObject.selectorRect = {75, 300 + (gameObject.selectorPos * 50), 20, 50};
@@ -542,7 +530,7 @@ void game(SDL_Renderer* renderer)
         presentQueue(renderer, textureQ, rectQ);
     }
 }
-/////////////////////////////////////////////////////////////////////////////////FUCKED UP CODE BE CAREFUL/////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////END OF MAIN LOOP/////////////////////////////////////////////////////////////////////////////////
 
 //Displays results and asks player if they want to go again
 void playAgainScreen()
@@ -623,7 +611,7 @@ void playAgainScreen()
     }
 
     //ADJUSTED
-    void initial_assignment(deckClass& deck) 
+    void initial_assignment(SDL_Renderer* renderer, deckClass& deck) 
     {
         std::cout << "initial assignment started" << std::endl;
         //Number assignment
@@ -633,12 +621,10 @@ void playAgainScreen()
             {
                 if (j + 1 <= 10) 
                 {
-                    std::cout << "loop 1" << i << " " << j << "" << std::endl;
                     deck.values[(i * 13) + j] = j + 1; 
                 }
                 else if (j + 1 > 10) 
                 {
-                    std::cout << "loop 1" << i << " " << j << "" << std::endl;
                     deck.values[(i*13) + j] = 10;
                 }
             }
@@ -653,10 +639,24 @@ void playAgainScreen()
         {
             for (int j = 0; j < 13; j++) 
             {
-                std::cout << "loop 2 " << i << " " << j << "" << std::endl;
                 deck.names[(i * 13) + j] = ranks[j] + suits[i];
-                std::cout << deck.names[(i * 13) + j] << std::endl;
             }
+        }
+
+        for (int i = 0; i < 52; i++) 
+        {
+            std::cout << "card " << (i) << ": " << deck.names[i] << std::endl;
+        }
+
+        SDL_Surface* surface;
+        SDL_Texture* texture;
+        for (int i = 0; i < 52; i++) 
+        {
+            surface = cardSurface(deck.names[i]);
+            texture = cardTexture(renderer, surface);
+            deck.surfaces.push_back(surface);
+            deck.textures.push_back(texture);
+            std::cout << "texture " << (i) << ": " << deck.textures[i] << std::endl;
         }
     }
 
@@ -667,23 +667,24 @@ void playAgainScreen()
         int previous_values[52];
         std::string previous_names[52];
         std::vector<SDL_Texture*> previous_textures;
-        previous_textures.resize(52);
-        deck.textures.resize(52);
 
         for (int i = 0; i < 52; i ++) 
         {
-            std::cout << "loop 3 ran" << std::endl;
+            //std::cout << "loop 3 ran" << std::endl;
             previous_values[i] = deck.values[i];
             previous_names[i] = deck.names[i];
             previous_textures.push_back(deck.textures[i]);
+            //std::cout << "Previous texture:" << previous_textures[i] << std::endl;
         }
 
         //Unique random number array generation
         random_array(randoms, 52);
-
+        for (int i = 0; i < 52; i++)
+        {
+            std::cout << randoms[i] << std::endl;
+        }
         for (int i = 0; i < 52; i++) 
         {
-            std::cout << "loop 4 ran" << std::endl;
             deck.values[randoms[i]] = previous_values[i];
             deck.names[randoms[i]] = previous_names[i];
             deck.textures[randoms[i]] = previous_textures[i];
@@ -691,19 +692,20 @@ void playAgainScreen()
     }
 
     //ADJUSTED
-    void initial_deal() 
+    void initial_deal(deckClass deck) 
     {
         for (int i = 0; i < 4; i++)
         {
             //Player
             if (i == 0 || i == 2) 
             {
+                std::cout << "texture to be assigned to player: " << deck.textures[i] << std::endl;
                 player.values.push_back(deck.values[51 - i]);
                 player.names.push_back(deck.names[51 - i]);
                 player.textures.push_back(deck.textures[51 - i]);
-
                 player.rects.push_back({500 + (i/2 * 150), 380, 145, 250}); //PLAYER.RECTS ASSIGNMENT
-                std::cout << "player rects have been updated" << std::endl;
+                std::cout << "player name: " << player.names[player.names.size() - 1] << std::endl;
+                std::cout << "texture in player vector: " << player.textures[player.textures.size() - 1] << std::endl;
                 player.total += deck.values[51 - i];
                 deck.values[51 - i] = 0;
                 deck.names[51 - i] = "EMPTY";
@@ -711,8 +713,12 @@ void playAgainScreen()
             //Dealer
             else if (i == 1 || i == 3) 
             {
+                std::cout << "texture to be assigned to dealer: " << deck.textures[i] << std::endl;
                 dealer.values.push_back(deck.values[51 - i]);
                 dealer.names.push_back(deck.names[51 - i]);
+                dealer.rects.push_back({500 + ((i-1)/2 * 150), 80, 145, 250});
+                std::cout << "dealer name: " << dealer.names[dealer.names.size() - 1] << std::endl;
+                std::cout << "dealer rects have been updated" << std::endl;
                 if (i == 1) 
                 {
                     gameObject.firstDealerCardSurface= deck.surfaces[51 - i];
@@ -723,8 +729,7 @@ void playAgainScreen()
                 {
                     dealer.textures.push_back(deck.textures[51 - i]);
                 }   
-                dealer.rects.push_back({500 + ((i-1)/2 * 150), 100, 145, 250}); 
-                std::cout << "dealer rects have been updated" << std::endl;
+                std::cout << "texture in dealer vector: " << dealer.textures[dealer.textures.size() - 1] << std::endl;
                 dealer.total += deck.values[51 - i];
                 deck.values[51 - i] = 0;
                 deck.names[51 - i] = "EMPTY";
