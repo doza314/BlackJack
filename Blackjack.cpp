@@ -62,8 +62,8 @@ int main() {
                 return 1;
             }
 
-   initial_assignment(renderer, deck);
-   shuffle();
+   //initial_assignment(renderer, deck);
+   //shuffle();
    //initial_deal();
 
     //Initital texture creation
@@ -74,18 +74,24 @@ int main() {
     //Start menu
     showStartMenu(renderer);
     
-    // Bet Prompt
-    promptForBet(renderer); 
+        while (!notPlaying) 
+        {
+        // Bet Prompt
+        promptForBet(renderer); 
 
-    //Game Initialization
-    initial_deal(deck);
+        initial_assignment(renderer, deck);
+        shuffle();
+
+        //Game Initialization
+        initial_deal(deck);
     
     
-    //Main game screen
-    game(renderer);
+        //Main game screen
+        game(renderer);
 
-    //Results
-    //playAgainScreen(renderer, gameObject, deck, player, dealer, options, split);
+        //Results
+        playAgain(renderer);
+        }
     }
 
     return 0;

@@ -40,6 +40,8 @@ extern std::vector<SDL_Rect> rectQ;
         public:
         //Graphial Variables
         SDL_Texture* firstCardTexture;
+        SDL_Texture* totalTexture;
+        SDL_Rect totalRect;
         std::vector<SDL_Texture*> textures;
         std::vector<SDL_Surface*> surfaces;
         std::vector<SDL_Rect> rects;
@@ -59,6 +61,7 @@ extern std::vector<SDL_Rect> rectQ;
         public:
         SDL_Color white = {255,255,255,255};
         SDL_Color red = {255,0,0,255};
+        SDL_Color yellow = {255,255,0,255};
         std::string selectorString = ">";
         int selectorPos = 0;
         std::string inputString = "";
@@ -78,11 +81,11 @@ extern std::vector<SDL_Rect> rectQ;
         SDL_Texture* underscoreTexture = nullptr;
         SDL_Texture* inputTexture = nullptr;
         
-        SDL_Rect balanceRect;
-        SDL_Rect betPromptRect;
-        SDL_Rect invalidRect;
-        SDL_Rect underscoreRect;
-        SDL_Rect inputRect;
+            SDL_Rect balanceRect;
+            SDL_Rect betPromptRect;
+            SDL_Rect invalidRect;
+            SDL_Rect underscoreRect;
+            SDL_Rect inputRect;
 
         //Game Screen
         SDL_Texture* selectorTexture = nullptr;
@@ -96,17 +99,41 @@ extern std::vector<SDL_Rect> rectQ;
         SDL_Texture* firstDealerCardTexture = nullptr;
         SDL_Surface* firstDealerCardSurface = nullptr;
         
-        SDL_Rect youRect;
-        SDL_Rect dealerRect;
-        SDL_Rect selectorRect;
-        SDL_Rect betRect;
-        SDL_Rect hiddenCardRect;
-        SDL_Rect firstDealerCardRect = hiddenCardRect;
+            SDL_Rect youRect;
+            SDL_Rect dealerRect;
+            SDL_Rect selectorRect;
+            SDL_Rect betRect;
+            SDL_Rect hiddenCardRect;
+            SDL_Rect firstDealerCardRect = hiddenCardRect;
+
+        //Results
+        SDL_Texture* playerWinsTexture = nullptr;
+        SDL_Texture* dealerWinsTexture = nullptr;
+        SDL_Texture* blackjackTexture = nullptr;
+        SDL_Texture* bustTexture = nullptr;
+        SDL_Texture* pushTexture = nullptr;
+        
+            SDL_Rect playerWinsRect;
+            SDL_Rect dealerWinsRect;
+            SDL_Rect blackjackRect;
+            SDL_Rect bustRect;
+            SDL_Rect pushRect;
+
+        //Play Again Prompt
+        SDL_Texture* playAgainTexture = nullptr;
+        SDL_Texture* yesTexture = nullptr;
+        SDL_Texture* noTexture = nullptr;
+        
+            SDL_Rect playAgainRect;
+            SDL_Rect yesRect;
+            SDL_Rect noRect;
+
 
         //Variables
         bool isQuit = false;
         bool isGameOver = false;
         bool notPlaying = false;
+        bool playerTurn = true;
     
         bool hitbool = false;
         bool standbool = false;
@@ -135,7 +162,9 @@ extern std::vector<SDL_Rect> rectQ;
         std::vector<SDL_Texture*> bottomTextures;
         std::vector<SDL_Surface*> bottomSurfaces;
         std::vector<SDL_Rect> bottomRects;
-
+        
+        SDL_Texture* selectorTexture = nullptr;
+        SDL_Rect selectorRect;
         //Variables
         std::vector<int> topValues;
         std::vector<std::string> topNames;
@@ -156,12 +185,14 @@ extern std::vector<SDL_Rect> rectQ;
         SDL_Texture* doubleDTexture = nullptr;
         SDL_Texture* surrenderTexture = nullptr;
         SDL_Texture* splitTexture = nullptr;
+        SDL_Texture* continueTexture = nullptr;
 
         SDL_Rect hitRect;
         SDL_Rect standRect;
         SDL_Rect doubleDRect;
         SDL_Rect surrenderRect;
         SDL_Rect splitRect;
+        SDL_Rect continueRect;
     };
 
     extern deckClass deck;
@@ -188,6 +219,7 @@ void toggleText(SDL_Renderer* renderer, SDL_Texture* &flashingText, gameClass& g
 void showStartMenu(SDL_Renderer* renderer); 
 void promptForBet(SDL_Renderer* renderer);  
 void game(SDL_Renderer* renderer);
+void playAgain(SDL_Renderer* renderer);
 
 //GAME LOGIC FUNCTIONS
     template<size_t N>

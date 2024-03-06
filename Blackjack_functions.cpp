@@ -7,19 +7,19 @@
     //Function to calculate text width
     int calculateTextWidth(std::string text) 
     {
-    int textWidth = 0;
-    textWidth = text.length()*18;
-    return textWidth;
+        int textWidth = 0;
+        textWidth = text.length()*18;
+        return textWidth;
     }
 
     //Function to check if string can be converted to double
     bool isConvertibleToDouble(std::string str) 
     {
-    std::istringstream iss(str);
-    double val;
-    iss >> val;
-    // Check if entire string was consumed and if only whitespace remains.
-    return iss.eof() && !iss.fail(); 
+        std::istringstream iss(str);
+        double val;
+        iss >> val;
+        // Check if entire string was consumed and if only whitespace remains.
+        return iss.eof() && !iss.fail(); 
     }
 
     //Function to convert double to string
@@ -118,6 +118,19 @@ void createTextures(SDL_Renderer* renderer, gameClass& gameObject, optionsClass&
         gameObject.youRect = {390, 550, 100, 50};
         gameObject.dealerRect = {390, 275, 100, 50};
     
+    //Results Textures
+    gameObject.playerWinsTexture = renderText("You win!", "C:/Windows/Fonts/arial.ttf", gameObject.yellow, 24, renderer);
+    gameObject.dealerWinsTexture = renderText("You lose!", "C:/Windows/Fonts/arial.ttf", gameObject.red, 24, renderer);
+    gameObject.blackjackTexture = renderText("Blackjack!", "C:/Windows/Fonts/arial.ttf", gameObject.yellow, 24, renderer);
+    gameObject.pushTexture = renderText("Push!", "C:/Windows/Fonts/arial.ttf", gameObject.white, 24, renderer);
+    gameObject.bustTexture = renderText("Bust!", "C:/Windows/Fonts/arial.ttf", gameObject.red, 24, renderer);
+
+        //Results Rectangles
+        gameObject.playerWinsRect = {20, 170, 250, 50};
+        gameObject.dealerWinsRect = {20, 170, 250, 50};
+        gameObject.blackjackRect = {20, 170, 250, 50};
+        gameObject.pushRect = {20, 170, 250, 50};
+        gameObject.bustRect = {20, 170, 250, 50};
 
     //Options Textures
     options.hitTexture = renderText("Hit", "C:/Windows/Fonts/arial.ttf", gameObject.white, 24, renderer);
@@ -125,6 +138,7 @@ void createTextures(SDL_Renderer* renderer, gameClass& gameObject, optionsClass&
     options.doubleDTexture = renderText("Double Down", "C:/Windows/Fonts/arial.ttf", gameObject.white, 24, renderer);
     options.surrenderTexture = renderText("Surrender", "C:/Windows/Fonts/arial.ttf", gameObject.white, 24, renderer);
     options.splitTexture = renderText("Split", "C:/Windows/Fonts/arial.ttf", gameObject.white, 24, renderer);
+    options.continueTexture = renderText("Continue", "C:/Windows/Fonts/arial.ttf", gameObject.white, 24, renderer);
 
         //Options Rectangles
         options.hitRect = {100, 300, 42, 50};
@@ -132,10 +146,25 @@ void createTextures(SDL_Renderer* renderer, gameClass& gameObject, optionsClass&
         options.doubleDRect = {100, 400, 154, 50};
         options.surrenderRect = {100, 450, 126, 50};
         options.splitRect = {100, 500, 70, 50};
+        options.continueRect = {100, 550, 120, 50};
+
+    //Split Textures
+    split.selectorTexture = renderText(">", "C:/Windows/Fonts/arial.ttf", gameObject.white, 24, renderer);
+    
 
     //Deck Textures
     gameObject.hiddenCardSurface = cardSurface("hidden");
     gameObject.hiddenCardTexture = cardTexture(renderer, gameObject.hiddenCardSurface);
+
+    //Play Again Functions
+    gameObject.playAgainTexture = renderText("Play Again?", "C:/Windows/Fonts/arial.ttf", gameObject.white, 24, renderer);
+    gameObject.yesTexture = renderText("Yes", "C:/Windows/Fonts/arial.ttf", gameObject.white, 24, renderer);
+    gameObject.noTexture = renderText("No", "C:/Windows/Fonts/arial.ttf", gameObject.white, 24, renderer);
+
+        //Play Again Rectangles
+        gameObject.playAgainRect = {500, 280, 250, 60};
+        gameObject.yesRect = {570, 360, 75, 50};
+        gameObject.noRect = {570, 410, 75, 50};
 }
 
 /**Function numbers
@@ -189,6 +218,183 @@ void updateQueue(SDL_Renderer* renderer)
             textureQ.push_back(gameObject.betTexture); //Bet in position 2
             rectQ.push_back(gameObject.betRect);
 
+            textureQ.push_back(gameObject.dealerTexture); //Dealer in position 3
+            rectQ.push_back(gameObject.dealerRect);
+
+            //textureQ.push_back(dealer.totalTexture); 
+            //rectQ.push_back(dealer.totalRect);
+
+            textureQ.push_back(gameObject.youTexture); //"You: " in position 4
+            rectQ.push_back(gameObject.youRect);
+
+            textureQ.push_back(player.totalTexture); //You total in position 5
+            rectQ.push_back(player.totalRect);
+
+            textureQ.push_back(options.hitTexture); //"Hit" in position 6
+            rectQ.push_back(options.hitRect);
+
+            textureQ.push_back(options.standTexture); //"Stand" in position 7
+            rectQ.push_back(options.standRect);
+
+            textureQ.push_back(options.doubleDTexture); //"Double Down" in position 8
+            rectQ.push_back(options.doubleDRect);
+
+            textureQ.push_back(options.surrenderTexture); //"Surrender" in position 9
+            rectQ.push_back(options.surrenderRect);
+
+            if (gameObject.numOptions == 5) 
+            {
+                textureQ.push_back(options.splitTexture); //"Split" in position 9
+                rectQ.push_back(options.splitRect);
+            }
+            
+        for (int i = 0; i < player.textures.size(); i++)
+            {
+                textureQ.push_back(player.textures[i]);
+                rectQ.push_back(player.rects[i]);
+            }   
+            for (int i = 0; i < dealer.textures.size(); i++) 
+            {
+                textureQ.push_back(dealer.textures[i]);
+                rectQ.push_back(dealer.rects[i]);
+            }
+            
+        break;
+        case 4: //Hit
+            
+            textureQ.push_back(gameObject.selectorTexture); //Selector in position 0
+            rectQ.push_back(gameObject.selectorRect);
+
+            textureQ.push_back(gameObject.balanceTexture); //Balance in position 1
+            rectQ.push_back(gameObject.balanceRect);
+
+            textureQ.push_back(gameObject.betTexture); //Bet in position 2
+            rectQ.push_back(gameObject.betRect);
+
+            textureQ.push_back(gameObject.dealerTexture); //Dealer in position 3
+            rectQ.push_back(gameObject.dealerRect);
+
+            //textureQ.push_back(dealer.totalTexture); 
+            //rectQ.push_back(dealer.totalRect);
+
+            textureQ.push_back(gameObject.youTexture); //"You: " in position 4
+            rectQ.push_back(gameObject.youRect);
+
+            textureQ.push_back(player.totalTexture); //You total in position 5
+            rectQ.push_back(player.totalRect);
+
+            textureQ.push_back(options.hitTexture); //"Hit" in position 6
+            rectQ.push_back(options.hitRect);
+
+            textureQ.push_back(options.standTexture); //"Stand" in position 7
+            rectQ.push_back(options.standRect);
+
+            for (int i = 0; i < player.textures.size(); i++)
+            {
+                textureQ.push_back(player.textures[i]);
+                rectQ.push_back(player.rects[i]);
+            }   
+            for (int i = 0; i < dealer.textures.size(); i++) 
+            {
+                textureQ.push_back(dealer.textures[i]);
+                rectQ.push_back(dealer.rects[i]);
+            }
+        break;
+        case 5: //END OF TURN
+        case 6: 
+        case 7:
+            
+            textureQ.push_back(gameObject.selectorTexture); //Selector in position 0
+            rectQ.push_back(gameObject.selectorRect);
+
+            textureQ.push_back(gameObject.dealerTexture); //"Dealer: " in position 3
+            rectQ.push_back(gameObject.dealerRect);
+
+            textureQ.push_back(dealer.totalTexture); //Dealer total in position 4
+            rectQ.push_back(dealer.totalRect);
+
+            textureQ.push_back(gameObject.youTexture); //"You: " in position 4
+            rectQ.push_back(gameObject.youRect);
+
+            textureQ.push_back(player.totalTexture); //You total in position 5
+            rectQ.push_back(player.totalRect);
+
+            textureQ.push_back(options.continueTexture); //"Continue" in position 5
+            rectQ.push_back(options.continueRect);
+
+            for (int i = 0; i < player.textures.size(); i++)
+            {
+                textureQ.push_back(player.textures[i]);
+                rectQ.push_back(player.rects[i]);
+            }   
+            for (int i = 0; i < dealer.textures.size(); i++) 
+            {
+                textureQ.push_back(dealer.textures[i]);
+                rectQ.push_back(dealer.rects[i]);
+            }
+
+            //Outcome conditionals
+            if(player.total > 21 && !gameObject.surrenderbool) //Player busts
+            {
+                textureQ.push_back(gameObject.bustTexture);
+                rectQ.push_back(gameObject.bustRect);
+                gameObject.bet = 0;
+            }
+            else if (player.total < 21 && dealer.total < 21 && player.total == dealer.total && !gameObject.surrenderbool) //Push
+            {
+                textureQ.push_back(gameObject.pushTexture);
+                rectQ.push_back(gameObject.pushRect);
+                gameObject.balance += gameObject.bet;
+                gameObject.balanceTexture = renderText("Balance: $" + toStringWithPrecision(gameObject.balance), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
+                gameObject.bet = 0;
+            }
+            else if ((player.total < 21 && dealer.total < 21 && player.total > dealer.total) && !gameObject.surrenderbool || (player.total < 21 && dealer.total > 21) && !gameObject.surrenderbool) //Player wins
+            {
+                textureQ.push_back(gameObject.playerWinsTexture);
+                rectQ.push_back(gameObject.playerWinsRect);
+                gameObject.balance += 2*gameObject.bet;
+                gameObject.balanceTexture = renderText("Balance: $" + toStringWithPrecision(gameObject.balance), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
+                gameObject.bet = 0;
+            }
+            else if ((player.total < 21 && dealer.total < 21 && player.total < dealer.total) && !gameObject.surrenderbool || (player.total < 21 & dealer.total == 21) && !gameObject.surrenderbool) //Dealer wins
+            {
+                textureQ.push_back(gameObject.dealerWinsTexture);
+                rectQ.push_back(gameObject.dealerWinsRect);
+                gameObject.bet = 0;
+            }
+            else if (player.total == 21 && !gameObject.surrenderbool) //Blackjack
+            {
+                textureQ.push_back(gameObject.blackjackTexture);
+                rectQ.push_back(gameObject.blackjackRect);
+                gameObject.balance += 2*gameObject.bet;
+                gameObject.balanceTexture = renderText("Balance: $" + toStringWithPrecision(gameObject.balance), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
+                gameObject.bet = 0;
+            }
+            else if (gameObject.surrenderbool == true) //Surrender
+            {
+                textureQ.push_back(gameObject.dealerWinsTexture);
+                rectQ.push_back(gameObject.dealerWinsRect);
+                gameObject.bet = 0;
+                gameObject.balanceTexture = renderText("Balance: $" + toStringWithPrecision(gameObject.balance), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
+                gameObject.surrenderbool = false;
+            }
+
+            textureQ.push_back(gameObject.balanceTexture); //Balance in position 1
+            rectQ.push_back(gameObject.balanceRect);
+
+        break;
+        case 8: //Split
+            textureQ.push_back(gameObject.selectorTexture); //Selector in position 0
+            rectQ.push_back(gameObject.selectorRect);
+
+
+
+            textureQ.push_back(gameObject.balanceTexture); //Balance in position 1
+            rectQ.push_back(gameObject.balanceRect);
+
+            textureQ.push_back(gameObject.betTexture); //Bet in position 2
+            rectQ.push_back(gameObject.betRect);
+
             textureQ.push_back(gameObject.dealerTexture); //"Dealer: " in position 3
             rectQ.push_back(gameObject.dealerRect);
 
@@ -201,51 +407,24 @@ void updateQueue(SDL_Renderer* renderer)
             textureQ.push_back(options.standTexture); //"Stand" in position 6
             rectQ.push_back(options.standRect);
 
-            textureQ.push_back(options.doubleDTexture); //"Double Down" in position 7    
-            rectQ.push_back(options.doubleDRect);
-
-            textureQ.push_back(options.surrenderTexture); //"Surrender" in position 8
-            rectQ.push_back(options.surrenderRect);
-
-            if (gameObject.numOptions == 5) 
-            {
-                textureQ.push_back(options.splitTexture); //"Split" in position 9
-                rectQ.push_back(options.splitRect);
-            }
-            
-        for (int i = 0; i < player.textures.size(); i++)
-         {
-                std::cout << "Player:" << std::endl;
-                std::cout << player.rects[i].x << " " << player.rects[i].y << std::endl;
-                textureQ.push_back(player.textures[i]);
-                rectQ.push_back(player.rects[i]);
-            }   
-            for (int i = 0; i < dealer.textures.size(); i++) 
-            {
-
-                std::cout << "Dealer:" << std::endl;
-                std::cout << dealer.rects[i].x << " " << dealer.rects[i].y << std::endl;
-                textureQ.push_back(dealer.textures[i]);
-                rectQ.push_back(dealer.rects[i]);
-            }
-            std::cout<< "textureQ size: " << textureQ.size() << std::endl;
-            std::cout<< "rectQ size: " << rectQ.size() << std::endl;
-            
-        break;
-        case 4: //Hit
-        break;
-        case 5: //Stand
-
-        break;
-        case 6: //Double
-
-        break;
-        case 7: //Surrender
-
-        break;
-        case 8: //Split
-
         break; 
+        case 9: //End menu
+            textureQ.push_back(gameObject.selectorTexture); //Selector in position 0
+            rectQ.push_back(gameObject.selectorRect);
+
+            textureQ.push_back(gameObject.balanceTexture); //Balance in position 1
+            rectQ.push_back(gameObject.balanceRect);
+
+            textureQ.push_back(gameObject.playAgainTexture); //"Yes" in position 2
+            rectQ.push_back(gameObject.playAgainRect);
+
+            textureQ.push_back(gameObject.yesTexture); //"Yes" in position 3
+            rectQ.push_back(gameObject.yesRect);
+
+            textureQ.push_back(gameObject.noTexture); //"No" in position 4
+            rectQ.push_back(gameObject.noRect);
+        
+        break;
     }
 }
 //Adds textures to queue
@@ -285,7 +464,7 @@ void toggleText(SDL_Renderer* renderer, SDL_Texture* &flashingText, gameClass& g
         else if (functionNumber == 2) {
             flashingText = gameObject.underscoreTexture;
         }
-        else if (functionNumber == 3) {
+        else if (functionNumber == 3 || functionNumber == 4 || functionNumber == 5 || functionNumber == 6 || functionNumber == 7 || functionNumber == 8 || functionNumber == 9) {
             flashingText = gameObject.selectorTexture;
         }
     }
@@ -415,7 +594,7 @@ void promptForBet(SDL_Renderer* renderer)
 
                     else if (event.key.keysym.sym == SDLK_RETURN) //User pressed Enter, submit the bet
                     {
-                        if (isConvertibleToDouble(gameObject.inputString) && std::stod(gameObject.inputString) <= gameObject.balance) 
+                        if (isConvertibleToDouble(gameObject.inputString) && std::stod(gameObject.inputString) <= gameObject.balance && std::stod(gameObject.inputString) > 0) 
                         {
                             done = true;
                             gameObject.balance -= std::stod(gameObject.inputString);
@@ -444,10 +623,6 @@ void promptForBet(SDL_Renderer* renderer)
     }
     textureQ.clear();
     rectQ.clear();
-    SDL_DestroyTexture(gameObject.underscoreTexture);
-    SDL_DestroyTexture(gameObject.inputTexture);
-    SDL_DestroyTexture(gameObject.betPromptTexture);
-    SDL_DestroyTexture(gameObject.invalidTexture);
 }
 
 void game(SDL_Renderer* renderer)
@@ -455,9 +630,33 @@ void game(SDL_Renderer* renderer)
     // Clear screen
     SDL_SetRenderDrawColor(renderer, 0, 128, 0, 255);
     SDL_RenderClear(renderer);
+    
+    player.totalTexture = renderText("Total: " + toStringWithPrecision(player.total, 0), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
+    player.totalRect = {390, 600, 100, 50};
+    
+    dealer.totalTexture = renderText("Total: " + toStringWithPrecision(dealer.total, 0), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
+    dealer.totalRect = {390, 325, 100, 50};
 
-    functionNumber = 3;
-    if (player.values[0] == player.values[1]) 
+    
+
+    gameObject.playerTurn = true;
+    gameObject.surrenderbool = false;
+
+    isGameOver = false;
+    gameObject.selectorPos = 0;
+    if (player.total < 21) 
+    {
+        functionNumber = 3;
+    }
+    else if (player.total == 21)
+    {
+        functionNumber = 5;
+        dealer.textures[0] = dealer.firstCardTexture;
+        gameObject.selectorPos = 5;
+    }    
+   
+
+    if (player.values[0] == player.values[1] || (player.values[0] == 11 && player.values[1] == 1)) 
     {
         gameObject.numOptions = 5;
     }
@@ -484,7 +683,7 @@ void game(SDL_Renderer* renderer)
                 break;
 
                 case SDL_KEYDOWN:
-                    if (event.key.keysym.sym == SDLK_UP && gameObject.selectorPos > 0)
+                    if (event.key.keysym.sym == SDLK_UP && gameObject.selectorPos > 0 && gameObject.selectorPos != 5)
                     {
                         gameObject.selectorPos --;
                         gameObject.selectorRect = {75, 300 + (gameObject.selectorPos * 50), 20, 50};
@@ -507,19 +706,115 @@ void game(SDL_Renderer* renderer)
                         switch (gameObject.selectorPos)
                         {
                             case 0: //HIT
+                                SDL_RenderClear(renderer);
+                                textureQ.clear();
+                                rectQ.clear();
+                                functionNumber = 4;
+                                gameObject.numOptions = 2;
+                                SDL_DestroyTexture(player.totalTexture);
+                               
 
+                                if (player.total < 21)
+                                {
+                                    hit(player);  
+                                }
+                                if (player.total == 21) {
+                                    functionNumber = 6;
+                                    dealer.textures[0] = dealer.firstCardTexture;
+                                    gameObject.numOptions = 1;
+                                    gameObject.selectorPos = 5;
+                                    gameObject.selectorRect = {75, 300 + (gameObject.selectorPos * 50), 20, 50};
+                                }
+                                if (player.total > 21)
+                                {
+                                    functionNumber = 6;
+                                    dealer.textures[0] = dealer.firstCardTexture;
+                                    gameObject.numOptions = 1;
+                                    gameObject.selectorPos = 5;
+                                    gameObject.selectorRect = {75, 300 + (gameObject.selectorPos * 50), 20, 50};
+                                } 
+                                player.totalTexture = renderText("Total: " + toStringWithPrecision(player.total, 0), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
+                                updateQueue(renderer);
+                                presentQueue(renderer, textureQ, rectQ);
+                                
                             break;
                             case 1: //STAND
+                                SDL_RenderClear(renderer);
+                                textureQ.clear();
+                                rectQ.clear();
+
+                                functionNumber = 5;
+                                dealer.textures[0] = dealer.firstCardTexture;
+                                gameObject.numOptions = 1;      
+                                gameObject.selectorPos = 5;
+                                gameObject.selectorRect = {75, 300 + (gameObject.selectorPos * 50), 20, 50};
+
+                                gameObject.playerTurn = false;
+                                while (dealer.total < 17)
+                                {
+                                    hit(dealer);
+                                    SDL_DestroyTexture(dealer.totalTexture);
+                                    dealer.totalTexture = renderText("Total: " + toStringWithPrecision(dealer.total, 0), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
+                                }
+
+                                updateQueue(renderer);  
+                                presentQueue(renderer, textureQ, rectQ);
 
                             break;
-                            case 2: //DOUBLE
+                            case 2: //DOUBLE DOWN
+                                gameObject.bet *= 2;
+                                gameObject.balance -= gameObject.bet/2;
+                                functionNumber = 6;
+                                gameObject.numOptions = 1;
+                                gameObject.balanceTexture = renderText("Balance: $" + toStringWithPrecision(gameObject.balance), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
+                                gameObject.betTexture = renderText("Bet: $" + toStringWithPrecision(gameObject.bet), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
+                                dealer.textures[0] = dealer.firstCardTexture;
+                                gameObject.selectorPos = 5;
+                                gameObject.selectorRect = {75, 300 + (gameObject.selectorPos * 50), 20, 50};
+                                SDL_DestroyTexture(player.totalTexture);
 
+
+                                SDL_RenderClear(renderer);
+                                textureQ.clear();
+                                rectQ.clear();
+
+                                hit(player);
+                                player.totalTexture = renderText("Total: " + toStringWithPrecision(player.total, 0), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
+                                gameObject.playerTurn = false;
+
+                                while(dealer.total < 17)
+                                {
+                                    hit(dealer);
+                                }
+
+                                updateQueue(renderer);
+                                presentQueue(renderer, textureQ, rectQ);
+                                
                             break;
                             case 3: //SURRENDER
+                                gameObject.surrenderbool = true;
+                                gameObject.playerTurn = false;
+                                gameObject.balance += gameObject.bet/2;
+                                dealer.textures[0] = dealer.firstCardTexture;
+                                functionNumber = 6;
+                                gameObject.numOptions = 1;
+                                gameObject.selectorPos = 5;
+                                gameObject.selectorRect = {75, 300 + (gameObject.selectorPos * 50), 20, 50};
+
+                                SDL_RenderClear(renderer);
+                                textureQ.clear();
+                                rectQ.clear();
+
+                                
+                                updateQueue(renderer);
+                                presentQueue(renderer, textureQ, rectQ);
 
                             break;
                             case 4: //SPLIT
 
+                            break;
+                            case 5: //CONTINUE TO END MENU
+                                isGameOver = true;
                             break;
                         }
                     }
@@ -529,14 +824,105 @@ void game(SDL_Renderer* renderer)
         toggleText(renderer, textureQ[0], gameObject, gameObject.lastToggle, functionNumber);// Update the screen
         presentQueue(renderer, textureQ, rectQ);
     }
+    player.total = 0;
+    player.textures.clear();
+    player.values.clear();
+    player.names.clear();
+    player.rects.clear();  
+
+    for (int i = 0; i < 52; i++)
+    {
+        SDL_DestroyTexture(deck.textures[i]);
+        SDL_FreeSurface(deck.surfaces[i]);
+    }
+
+    dealer.total = 0;
+    dealer.textures.clear();
+    dealer.values.clear();
+    dealer.names.clear();
+    dealer.rects.clear();
+
+    deck.names.clear();
+    deck.textures.clear();
+    deck.surfaces.clear();
+
+    textureQ.clear();
+    rectQ.clear();
 }
+
+void playAgain(SDL_Renderer* renderer)
+{
+    // Clear screen
+    SDL_SetRenderDrawColor(renderer, 0, 128, 0, 255);
+    SDL_RenderClear(renderer);
+    functionNumber = 9;
+    gameObject.numOptions = 2;
+    gameObject.selectorPos = 0;
+    gameObject.selectorRect = {540, 360 + (gameObject.selectorPos *  50), 20, 50};
+
+    
+    bool menu = true;
+    SDL_Event event;
+    updateQueue(renderer);
+    presentQueue(renderer, textureQ, rectQ);
+
+    while (menu)
+    {
+        while (SDL_PollEvent(&event) != 0)
+        {
+            switch (event.type) 
+            {
+                case SDL_QUIT:
+                    isQuit = true;
+                    notPlaying = true;
+                    menu = false;
+                break;
+                case SDL_KEYDOWN:
+                    if (event.key.keysym.sym == SDLK_DOWN && gameObject.selectorPos < gameObject.numOptions - 1)
+                    {
+                        gameObject.selectorPos += 1;
+                        gameObject.selectorRect = {540, 360 + (gameObject.selectorPos *  50), 20, 50};
+
+                        SDL_RenderClear(renderer);
+                        rectQ[0] = gameObject.selectorRect;
+                        presentQueue(renderer, textureQ, rectQ);
+                    }
+                    else if (event.key.keysym.sym == SDLK_UP && gameObject.selectorPos > 0) 
+                    {
+                        gameObject.selectorPos -= 1;
+                        gameObject.selectorRect = {540, 360 + (gameObject.selectorPos *  50), 20, 50};
+
+                        SDL_RenderClear(renderer);
+                        rectQ[0] = gameObject.selectorRect;
+                        presentQueue(renderer, textureQ, rectQ);
+                    }
+                    else if (event.key.keysym.sym == SDLK_RETURN)
+                    {
+                        switch(gameObject.selectorPos) 
+                        {
+                            case 0: //YES PLAY AGAIN
+                                menu = false;
+                            break;
+                            case 1: //NO DON'T PLAY AGAIN.
+                                isQuit = true;
+                                notPlaying = true;
+                                menu = false;
+                            break;
+                        }
+                    }
+            }
+
+        }
+        SDL_RenderClear(renderer);
+        toggleText(renderer, textureQ[0], gameObject, gameObject.lastToggle, functionNumber);// Update the screen
+        presentQueue(renderer, textureQ, rectQ);
+    }
+    textureQ.clear();
+    rectQ.clear();
+}   
 /////////////////////////////////////////////////////////////////////////////////END OF MAIN LOOP/////////////////////////////////////////////////////////////////////////////////
 
-//Displays results and asks player if they want to go again
-void playAgainScreen()
-{
 
-}
 
 
 //GAME LOGIC FUNCTIONS
@@ -694,26 +1080,30 @@ void playAgainScreen()
     //ADJUSTED
     void initial_deal(deckClass deck) 
     {
+        player.total = 0;
+        dealer.total = 0;
         for (int i = 0; i < 4; i++)
         {
             //Player
             if (i == 0 || i == 2) 
             {
-                std::cout << "texture to be assigned to player: " << deck.textures[i] << std::endl;
+                std::cout << "texture to be assigned to player: " << deck.textures[51 - i] << std::endl;
                 player.values.push_back(deck.values[51 - i]);
                 player.names.push_back(deck.names[51 - i]);
                 player.textures.push_back(deck.textures[51 - i]);
                 player.rects.push_back({500 + (i/2 * 150), 380, 145, 250}); //PLAYER.RECTS ASSIGNMENT
-                std::cout << "player name: " << player.names[player.names.size() - 1] << std::endl;
+                //std::cout << "player name: " << player.names[player.names.size() - 1] << std::endl;
                 std::cout << "texture in player vector: " << player.textures[player.textures.size() - 1] << std::endl;
+                std::cout << "Player value: " << player.values[player.values.size() - 1] << std::endl;
                 player.total += deck.values[51 - i];
+                deck.textures[51 - i] = nullptr;
                 deck.values[51 - i] = 0;
                 deck.names[51 - i] = "EMPTY";
             }
             //Dealer
             else if (i == 1 || i == 3) 
             {
-                std::cout << "texture to be assigned to dealer: " << deck.textures[i] << std::endl;
+                std::cout << "texture to be assigned to dealer: " << deck.textures[51 - i] << std::endl;
                 dealer.values.push_back(deck.values[51 - i]);
                 dealer.names.push_back(deck.names[51 - i]);
                 dealer.rects.push_back({500 + ((i-1)/2 * 150), 80, 145, 250});
@@ -723,6 +1113,7 @@ void playAgainScreen()
                 {
                     gameObject.firstDealerCardSurface= deck.surfaces[51 - i];
                     gameObject.firstDealerCardTexture = deck.textures[51 - i];
+                    dealer.firstCardTexture = gameObject.firstDealerCardTexture;
                     dealer.textures.push_back(gameObject.hiddenCardTexture);
                 }
                 else 
@@ -731,16 +1122,44 @@ void playAgainScreen()
                 }   
                 std::cout << "texture in dealer vector: " << dealer.textures[dealer.textures.size() - 1] << std::endl;
                 dealer.total += deck.values[51 - i];
+                deck.textures[51 - i] = nullptr;
                 deck.values[51 - i] = 0;
                 deck.names[51 - i] = "EMPTY";
             }
         }
+
+        /*
+        for (int i = 0; i < 52; i++) 
+        {
+            std::cout << "card " << i << ": " << deck.names[i] << " has value " << deck.values[i] << std::endl;
+        }
+       */
+       
+
+       //Player draws an ace or multiple aces
+        if (player.values[0] == player.values[1]  && player.values[0] == 1)  
+        {
+            player.values[0] = 11;
+            player.total = player.values[0] + player.values[1];
+        }
+        else if (player.values[0] == 1 && (11 + player.values[1]) <= 21)
+        {
+            player.values[0] = 11;
+            player.total = player.values[0] + player.values[1];
+        }
+        else if (player.values[1] == 1 && (11 + player.values[0]) <= 21)
+        {
+            player.values[1] = 11;
+            player.total = player.values[0] + player.values[1];
+        }
+
+
     }
 
     //ADJUSTED
     void hit(playerClass& player_dealer)    
     {
-        int index = 51;
+        int index = 47;
         bool condition = false;
 
         while (condition == false) 
@@ -761,6 +1180,45 @@ void playAgainScreen()
         player_dealer.names.push_back(deck.names[index]);
         player_dealer.textures.push_back(deck.textures[index]);
 
+        if (gameObject.playerTurn == true)
+        {
+            if (player_dealer.values.size() > 5) 
+            {   
+                for (int i = 0; i < 5; i++) 
+                {
+                    player_dealer.rects[i] = {500 + (i * 75), 380, 73, 125};
+                }
+                for (int j = 0; j < player_dealer.values.size() - 5; j++)
+                {
+                    player_dealer.rects[j + 5] = {500 + (j * 75), 510, 73, 125};
+                }
+            }
+            else
+            {
+                player_dealer.rects.push_back({static_cast<int>(500 + ((player_dealer.values.size() - 1) * 150)), 380, 145, 250});
+            }
+        }
+        else if (gameObject.playerTurn == false)    
+        {
+           
+            if (player_dealer.values.size() > 5) 
+            {   
+                for (int i = 0; i < 5; i++) 
+                {
+                    player_dealer.rects[i] = {500 + (i * 75), 80, 73, 125};
+                }
+
+                for (int j = 0; j < player_dealer.values.size() - 5; j++)
+                {
+                    player_dealer.rects[j + 5] = {500 + (j * 75), 210, 73 , 125};
+                }
+            }
+            else 
+            { 
+                player_dealer.rects.push_back({static_cast<int>(500 + ((player_dealer.values.size() - 1) * 150)), 80, 145, 250});
+            }
+            
+        }
         std::cout << "card from hit: " << deck.names[index] << std::endl;
         deck.values[index] = 0;
         deck.names[index] = "EMPTY";
