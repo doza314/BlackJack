@@ -1035,6 +1035,7 @@ void game(SDL_Renderer* renderer)
                                         switch (split.selectorPos)
                                         {
                                             case 0:
+                                                gameObject.numOptions = 3;
                                                 gameObject.balance -= gameObject.bet/2;
                                                 gameObject.balanceTexture = renderText("Balance: " + toStringWithPrecision(gameObject.balance, 2), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
                                                 gameObject.bet *= 1.5;
