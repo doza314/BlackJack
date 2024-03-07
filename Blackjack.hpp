@@ -164,16 +164,38 @@ extern std::vector<SDL_Rect> rectQ;
         std::vector<SDL_Rect> bottomRects;
         
         SDL_Texture* selectorTexture = nullptr;
+        SDL_Texture* topTotalTexture = nullptr;
+        SDL_Texture* topResultTexture = nullptr;
+        SDL_Texture* bottomTotalTexture = nullptr;
+        SDL_Texture* bottomResultTexture = nullptr;
+
         SDL_Rect selectorRect;
+        SDL_Rect topTotalRect = {500, 410, 100, 50};
+        SDL_Rect topResultRect;
+        SDL_Rect bottomResultRect;
+        SDL_Rect bottomTotalRect = {500, 540, 100, 50};
+
         //Variables
         std::vector<int> topValues;
         std::vector<std::string> topNames;
 
         std::vector<int> bottomValues;
         std::vector<std::string> bottomNames;
+        
+        bool topResult = false;
+        bool bottomResult = false;
+        int selectorPos = 0;
+        int topTotal = 0;
+        int bottomTotal = 0;
 
-        int topTotal;
-        int bottomTotal;
+        bool splitstand = false;
+
+        bool topBust = false;
+        bool topBlackjack = false;
+
+        bool bottomBust = false;
+        bool bottomBlackjack = false;
+
     };
 
     class optionsClass 
