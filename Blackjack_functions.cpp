@@ -540,8 +540,11 @@ void updateQueue(SDL_Renderer* renderer)
             textureQ.push_back(options.standTexture); //"Stand" in position 6
             rectQ.push_back(options.standRect);
 
+            if (gameObject.numOptions == 3) 
+            {
             textureQ.push_back(options.doubleDTexture); //"Double" in position 7
             rectQ.push_back(options.doubleDRect);
+            }
 
             textureQ.push_back(split.selectorTexture); //Split selector in position 8
             rectQ.push_back(split.selectorRect);
@@ -895,7 +898,8 @@ void game(SDL_Renderer* renderer)
                                             split.topTotalTexture = renderText("Total: " + toStringWithPrecision(split.topTotal, 0), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
                                         }
                                         if (split.topTotal > 21)
-                                        {
+                                        {   
+                                            gameObject.numOptions = 3;
                                             split.topResult = true;
                                             split.topResultTexture = renderText("BUST!", "C:/Windows/Fonts/arial.ttf", gameObject.red, 14, renderer);
                                             split.topResultRect = {static_cast<int>(650 + (split.topValues.size()) * 75), 400, 100, 50};
@@ -980,6 +984,7 @@ void game(SDL_Renderer* renderer)
                                         switch (split.selectorPos)
                                         {
                                             case 0:
+                                                gameObject.numOptions = 3;
                                                 split.selectorPos = 1;
                                                 split.selectorRect = {625, 410 + (split.selectorPos * 130), 20, 50};
                                             break;
@@ -1179,9 +1184,13 @@ void game(SDL_Renderer* renderer)
         }
         SDL_RenderClear(renderer);
         toggleText(renderer, textureQ[0], gameObject, gameObject.lastToggle, functionNumber);// Update the screen
-        if (gameObject.splitbool && functionNumber == 8)
+        if (gameObject.splitbool && functionNumber == 8 && gameObject.numOptions == 3)
         {
             toggleText(renderer, textureQ[8], gameObject, gameObject.lastToggle, functionNumber);
+        }
+        else if (gameObject.splitbool && functionNumber == 8 && gameObject.numOptions == 2)
+        {
+            toggleText(renderer, textureQ[7], gameObject, gameObject.lastToggle, functionNumber);
         }
         presentQueue(renderer, textureQ, rectQ);
     }
