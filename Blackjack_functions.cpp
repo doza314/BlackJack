@@ -1045,6 +1045,7 @@ void game(SDL_Renderer* renderer)
                                                 gameObject.balanceTexture = renderText("Balance: " + toStringWithPrecision(gameObject.balance, 2), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
                                                 gameObject.bet *= 1.5;
                                                 gameObject.betTexture = renderText("Bet: " + toStringWithPrecision(gameObject.bet, 2), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
+                                                split.topdouble = true;
                                                 functionNumber = 8;
                                                 hit(player);
                                                 SDL_DestroyTexture(split.topTotalTexture);
@@ -1060,10 +1061,21 @@ void game(SDL_Renderer* renderer)
                                                 split.selectorRect = {625, 410 + (split.selectorPos * 130), 20, 50};
                                             break;
                                             case 1:
+                                                if (split.topdouble)
+                                                {
                                                 gameObject.balance -= (gameObject.bet/3);
                                                 gameObject.balanceTexture = renderText("Balance: " + toStringWithPrecision(gameObject.balance, 2), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
                                                 gameObject.bet += (gameObject.bet/3);
                                                 gameObject.betTexture = renderText("Bet: " + toStringWithPrecision(gameObject.bet, 2), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
+                                                split.topdouble = false;
+                                                }
+                                                else if (!split.topdouble)
+                                                {
+                                                    gameObject. balance -= (gameObject.bet/2);
+                                                    gameObject.balanceTexture = renderText("Balance: " + toStringWithPrecision(gameObject.balance, 2), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
+                                                    gameObject.bet += (gameObject.bet/2);
+                                                    gameObject.betTexture = renderText("Bet: " + toStringWithPrecision(gameObject.bet, 2), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
+                                                }
                                                 functionNumber = 6;
                                                 gameObject.numOptions = 1;
                                                 split.bottomResult = true;

@@ -188,8 +188,9 @@ extern std::vector<SDL_Rect> rectQ;
         int topTotal = 0;
         int bottomTotal = 0;
 
-        bool splitstand = false;
+        bool splitstand = false;    
 
+        bool topdouble = false;
         bool topBust = false;
         bool topBlackjack = false;
 
