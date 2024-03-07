@@ -5,6 +5,7 @@
 SDL_Window* window = nullptr;
 SDL_Renderer* renderer = nullptr;
 TTF_Font* font = nullptr;
+Mix_Chunk* sound = Mix_LoadWAV("src/click.wav");
 
 bool isQuit = false;
 bool isGameOver = false;
@@ -36,9 +37,15 @@ int main() {
         //Start up SDL and create window
 
             //Initializing SDL
-            if (SDL_Init(SDL_INIT_VIDEO) < 0) 
+            if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) 
             {
                 std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
+                return 1;
+            }
+
+            if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) != 0) 
+            {
+                 std::cerr << "Error initializing SDL_Mixer: " << Mix_GetError() << std::endl;
                 return 1;
             }
             //Initializing SDL_ttf

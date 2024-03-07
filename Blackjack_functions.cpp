@@ -684,6 +684,7 @@ void showStartMenu(SDL_Renderer* renderer)
             {
                 if (event.key.keysym.sym == SDLK_RETURN) 
                 {
+                    Mix_PlayChannel(-1, sound, 0);
                     startGame = true;
                 }
             }
@@ -772,6 +773,7 @@ void promptForBet(SDL_Renderer* renderer)
 
                     else if (event.key.keysym.sym == SDLK_RETURN) //User pressed Enter, submit the bet
                     {
+                        Mix_PlayChannel(-1, sound, 0);
                         if (isConvertibleToDouble(gameObject.inputString) && std::stod(gameObject.inputString) <= gameObject.balance && std::stod(gameObject.inputString) > 0) 
                         {
                             done = true;
@@ -875,6 +877,7 @@ void game(SDL_Renderer* renderer)
                     }
                     if (event.key.keysym.sym == SDLK_RETURN)
                     {
+                        Mix_PlayChannel(-1, sound, 0);
                         switch (gameObject.selectorPos)
                         {
                             case 0: //HIT
@@ -1301,6 +1304,7 @@ void playAgain(SDL_Renderer* renderer)
                     }
                     else if (event.key.keysym.sym == SDLK_RETURN)
                     {
+                        Mix_PlayChannel(-1, sound, 0);
                         switch(gameObject.selectorPos) 
                         {
                             case 0: //YES PLAY AGAIN

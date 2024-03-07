@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include <SDL_image.h>
+#include <SDL_mixer.h>
 #include <iostream>
 #include <cmath>
 #include <random>
@@ -19,6 +20,8 @@ extern int functionNumber;
 extern std::vector<SDL_Surface*> surfaceQ;
 extern std::vector<SDL_Texture*> textureQ;
 extern std::vector<SDL_Rect> rectQ;
+
+extern Mix_Chunk* sound;
 //CLASSES
 
     //Deck variables
