@@ -1118,6 +1118,8 @@ void game(SDL_Renderer* renderer)
                                 while(dealer.total < 17)
                                 {
                                     hit(dealer);
+                                    SDL_DestroyTexture(dealer.totalTexture);
+                                    dealer.totalTexture = renderText("Total: " + toStringWithPrecision(dealer.total, 0), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
                                 }
                                 }
                                 updateQueue(renderer);
