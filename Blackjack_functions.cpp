@@ -418,6 +418,9 @@ void updateQueue(SDL_Renderer* renderer)
                
             if (!split.topBust) //TOP HAND
             {
+                //std::cout << "Top total: " << split.topTotal << std::endl;
+                //std::cout << "Bottom total: " << split.bottomTotal << std::endl;
+                //std::cout << "Dealer total: " << dealer.total << std::endl;
                 if (split.topTotal <= 21 && dealer.total <= 21 && split.topTotal == dealer.total) //Push
                 {
                     split.topResultTexture = renderText("PUSH!", "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
@@ -440,7 +443,7 @@ void updateQueue(SDL_Renderer* renderer)
                     gameObject.balance += split.topBet * 2;
                     gameObject.balanceTexture = renderText("Balance: $" + toStringWithPrecision(gameObject.balance), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
                 }
-                if (split.topTotal == 21 && dealer.total != 21) //Blackjack
+                if (split.topTotal == 21 && (dealer.total != 21)) //Blackjack
                 {
                     split.topResultTexture = renderText("BLACKJACK!", "C:/Windows/Fonts/arial.ttf", gameObject.yellow, 14, renderer);  
                     split.topResultRect = {static_cast<int>(650 + (split.topValues.size()) * 75), 400, 180, 50};
@@ -484,7 +487,7 @@ void updateQueue(SDL_Renderer* renderer)
                     gameObject.balance += split.bottomBet * 2;
                     gameObject.balanceTexture = renderText("Balance: $" + toStringWithPrecision(gameObject.balance), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
                 }
-                if (split.bottomTotal == 21 && dealer.total != 21) //Blackjack
+                if (split.bottomTotal == 21 && (dealer.total != 21)) //Blackjack
                 {
                     split.bottomResultTexture = renderText("BLACKJACK!", "C:/Windows/Fonts/arial.ttf", gameObject.yellow, 14, renderer);  
                     split.bottomResultRect = {static_cast<int>(650 + (split.bottomValues.size()) * 75), 530, 180, 50};
@@ -559,7 +562,7 @@ void updateQueue(SDL_Renderer* renderer)
             {
                 textureQ.push_back(split.topResultTexture);
                 rectQ.push_back(split.topResultRect);
-                std::cout << "SPLT TOP RESULT RAN" << std::endl;
+                
             }
             
 
@@ -922,7 +925,7 @@ void game(SDL_Renderer* renderer)
                                         {
                                             split.bottomResult = true;
                                             split.bottomResultTexture = renderText("BLACKJACK!", "C:/Windows/Fonts/arial.ttf", gameObject.yellow, 14, renderer);
-                                            std::cout << split.bottomResultTexture << std::endl;
+                                            //std::cout << split.bottomResultTexture << std::endl;
                                             split.bottomResultRect = {static_cast<int>(650 + (split.bottomValues.size()) * 75), 530, 180, 50};
                                             gameObject.numOptions = 1;
                                             gameObject.selectorPos = 5;
@@ -1006,7 +1009,7 @@ void game(SDL_Renderer* renderer)
                                                     hit(dealer);
                                                     SDL_DestroyTexture(dealer.totalTexture);
                                                     dealer.totalTexture = renderText("Total: " + toStringWithPrecision(dealer.total, 0), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
-                                                    std::cout << "player got to hit" <<std::endl;
+                                                    //std::cout << "player got to hit" <<std::endl;
                                                 }
                                             break;
                                         }
@@ -1028,7 +1031,7 @@ void game(SDL_Renderer* renderer)
                                     dealer.totalTexture = renderText("Total: " + toStringWithPrecision(dealer.total, 0), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
                                 }
                                 }
-                                std::cout << "still going" << std::endl;
+                                //std::cout << "still going" << std::endl;
                                 updateQueue(renderer);  
                                 presentQueue(renderer, textureQ, rectQ);
 
@@ -1090,7 +1093,7 @@ void game(SDL_Renderer* renderer)
                                                 gameObject.playerTurn = false;
                                                 while(dealer.total < 17)
                                                 {
-                                                    std::cout << "This part ran" << std::endl;
+                                                    //std::cout << "This part ran" << std::endl;
                                                    hit(dealer);
                                                    SDL_DestroyTexture(dealer.totalTexture);
                                                    dealer.totalTexture = renderText("Total: " + toStringWithPrecision(dealer.total, 0), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
@@ -1175,7 +1178,15 @@ void game(SDL_Renderer* renderer)
                                 
                                 split.bottomTotal = player.values[1];
                                 split.bottomTotalTexture = renderText("Total: " + toStringWithPrecision(split.bottomTotal, 0), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
-                                split.bottomValues.push_back(player.values[1]);
+                                if (player.values[1] == 11 || player.values[1] == 1)
+                                {
+                                     split.bottomValues.push_back(11);
+                                }
+                                else
+                                {
+                                    split.bottomValues.push_back(player.values[1]);
+                                }
+                               
                                 split.bottomTextures.push_back(player.textures[1]);
                                 split.bottomRects.push_back(player.rects[1]);
 
@@ -1397,14 +1408,14 @@ void playAgain(SDL_Renderer* renderer)
     {
         for (int i = 0; i < 52; i++) 
         {
-            std::cout << deck.names[i] << " has value " << deck.values[i] << std::endl;
+            //std::cout << deck.names[i] << " has value " << deck.values[i] << std::endl;
         }
     }
 
     //ADJUSTED
     void initial_assignment(SDL_Renderer* renderer, deckClass& deck) 
     {
-        std::cout << "initial assignment started" << std::endl;
+        //std::cout << "initial assignment started" << std::endl;
         //Number assignment
         for (int i = 0; i < 4; i++) 
         {
@@ -1436,7 +1447,7 @@ void playAgain(SDL_Renderer* renderer)
 
         for (int i = 0; i < 52; i++) 
         {
-            std::cout << "card " << (i) << ": " << deck.names[i] << std::endl;
+            //std::cout << "card " << (i) << ": " << deck.names[i] << std::endl;
         }
 
         SDL_Surface* surface;
@@ -1447,7 +1458,7 @@ void playAgain(SDL_Renderer* renderer)
             texture = cardTexture(renderer, surface);
             deck.surfaces.push_back(surface);
             deck.textures.push_back(texture);
-            std::cout << "texture " << (i) << ": " << deck.textures[i] << std::endl;
+            //std::cout << "texture " << (i) << ": " << deck.textures[i] << std::endl;
         }
     }
 
@@ -1461,18 +1472,18 @@ void playAgain(SDL_Renderer* renderer)
 
         for (int i = 0; i < 52; i ++) 
         {
-            //std::cout << "loop 3 ran" << std::endl;
+            ////std::cout << "loop 3 ran" << std::endl;
             previous_values[i] = deck.values[i];
             previous_names[i] = deck.names[i];
             previous_textures.push_back(deck.textures[i]);
-            //std::cout << "Previous texture:" << previous_textures[i] << std::endl;
+            ////std::cout << "Previous texture:" << previous_textures[i] << std::endl;
         }
 
         //Unique random number array generation
         random_array(randoms, 52);
         for (int i = 0; i < 52; i++)
         {
-            std::cout << randoms[i] << std::endl;
+            //std::cout << randoms[i] << std::endl;
         }
         for (int i = 0; i < 52; i++) 
         {
@@ -1492,14 +1503,14 @@ void playAgain(SDL_Renderer* renderer)
             //Player
             if (i == 0 || i == 2) 
             {
-                std::cout << "texture to be assigned to player: " << deck.textures[51 - i] << std::endl;
+                //std::cout << "texture to be assigned to player: " << deck.textures[51 - i] << std::endl;
                 player.values.push_back(deck.values[51 - i]);
                 player.names.push_back(deck.names[51 - i]);
                 player.textures.push_back(deck.textures[51 - i]);
                 player.rects.push_back({500 + (i/2 * 150), 380, 145, 250}); //PLAYER.RECTS ASSIGNMENT
-                //std::cout << "player name: " << player.names[player.names.size() - 1] << std::endl;
-                std::cout << "texture in player vector: " << player.textures[player.textures.size() - 1] << std::endl;
-                std::cout << "Player value: " << player.values[player.values.size() - 1] << std::endl;
+                ////std::cout << "player name: " << player.names[player.names.size() - 1] << std::endl;
+                //std::cout << "texture in player vector: " << player.textures[player.textures.size() - 1] << std::endl;
+                //std::cout << "Player value: " << player.values[player.values.size() - 1] << std::endl;
                 player.total += deck.values[51 - i];
                 deck.textures[51 - i] = nullptr;
                 deck.values[51 - i] = 0;
@@ -1508,12 +1519,12 @@ void playAgain(SDL_Renderer* renderer)
             //Dealer
             else if (i == 1 || i == 3) 
             {
-                std::cout << "texture to be assigned to dealer: " << deck.textures[51 - i] << std::endl;
+                //std::cout << "texture to be assigned to dealer: " << deck.textures[51 - i] << std::endl;
                 dealer.values.push_back(deck.values[51 - i]);
                 dealer.names.push_back(deck.names[51 - i]);
                 dealer.rects.push_back({500 + ((i-1)/2 * 150), 80, 145, 250});
-                std::cout << "dealer name: " << dealer.names[dealer.names.size() - 1] << std::endl;
-                std::cout << "dealer rects have been updated" << std::endl;
+                //std::cout << "dealer name: " << dealer.names[dealer.names.size() - 1] << std::endl;
+                //std::cout << "dealer rects have been updated" << std::endl;
                 if (i == 1) 
                 {
                     gameObject.firstDealerCardSurface= deck.surfaces[51 - i];
@@ -1525,7 +1536,7 @@ void playAgain(SDL_Renderer* renderer)
                 {
                     dealer.textures.push_back(deck.textures[51 - i]);
                 }   
-                std::cout << "texture in dealer vector: " << dealer.textures[dealer.textures.size() - 1] << std::endl;
+                //std::cout << "texture in dealer vector: " << dealer.textures[dealer.textures.size() - 1] << std::endl;
                 dealer.total += deck.values[51 - i];
                 deck.textures[51 - i] = nullptr;
                 deck.values[51 - i] = 0;
@@ -1536,7 +1547,7 @@ void playAgain(SDL_Renderer* renderer)
         /*
         for (int i = 0; i < 52; i++) 
         {
-            std::cout << "card " << i << ": " << deck.names[i] << " has value " << deck.values[i] << std::endl;
+            //std::cout << "card " << i << ": " << deck.names[i] << " has value " << deck.values[i] << std::endl;
         }
        */
        
@@ -1597,9 +1608,9 @@ void playAgain(SDL_Renderer* renderer)
 
         if (!gameObject.splitbool || split.splitstand) //REGULAR HITTING
         {
-            std::cout << "0" << std::endl;
+            //std::cout << "0" << std::endl;
            
-            std::cout << "player total: " << player_dealer.total << std::endl;
+            //std::cout << "player total: " << player_dealer.total << std::endl;
             gameObject.newCards += 1;
             player_dealer.values.push_back(deck.values[index]);
             player_dealer.names.push_back(deck.names[index]);
@@ -1615,7 +1626,7 @@ void playAgain(SDL_Renderer* renderer)
 
             if (gameObject.playerTurn == true && gameObject.splitbool == false)  //PLAYER
             {
-                std::cout << "1" << std::endl;
+                //std::cout << "1" << std::endl;
                 if (player_dealer.values.size() > 5) 
                 {   
                     for (int i = 0; i < 5; i++) 
@@ -1634,7 +1645,7 @@ void playAgain(SDL_Renderer* renderer)
             }
             else if (gameObject.playerTurn == false)  //DEALER
             {
-                std::cout << "2" << std::endl;
+                //std::cout << "2" << std::endl;
                 if (player_dealer.values.size() > 5) 
                 {   
                     for (int i = 0; i < 5; i++) 
@@ -1694,7 +1705,7 @@ void playAgain(SDL_Renderer* renderer)
                 break;
             }
         }
-        std::cout << "card from hit: " << deck.names[index] << std::endl;
+        //std::cout << "card from hit: " << deck.names[index] << std::endl;
         deck.values[index] = 0;
         deck.names[index] = "EMPTY";
         deck.textures[index] = nullptr;
