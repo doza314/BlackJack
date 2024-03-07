@@ -189,6 +189,8 @@ extern Mix_Chunk* sound;
         bool bottomResult = false;
         int selectorPos = 0;
         int topTotal = 0;
+        double topBet = 0.00;
+        double bottomBet = 0;
         int bottomTotal = 0;
 
         bool splitstand = false;    

@@ -426,7 +426,7 @@ void updateQueue(SDL_Renderer* renderer)
                     textureQ.push_back(split.topResultTexture);
                     rectQ.push_back(split.topResultRect);
 
-                    gameObject.balance += gameObject.bet/2;
+                    gameObject.balance += split.topBet;
                     gameObject.balanceTexture = renderText("Balance: $" + toStringWithPrecision(gameObject.balance), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
                 }
                 if (split.topTotal < 21 && dealer.total < 21 && split.topTotal > dealer.total || (split.topTotal < 21 && dealer.total > 21)) //Player wins
@@ -437,7 +437,7 @@ void updateQueue(SDL_Renderer* renderer)
                     textureQ.push_back(split.topResultTexture);
                     rectQ.push_back(split.topResultRect);
 
-                    gameObject.balance += gameObject.bet;
+                    gameObject.balance += split.topBet * 2;
                     gameObject.balanceTexture = renderText("Balance: $" + toStringWithPrecision(gameObject.balance), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
                 }
                 if (split.topTotal == 21 && dealer.total != 21) //Blackjack
@@ -448,7 +448,7 @@ void updateQueue(SDL_Renderer* renderer)
                     textureQ.push_back(split.topResultTexture);
                     rectQ.push_back(split.topResultRect);
 
-                    gameObject.balance += gameObject.bet;
+                    gameObject.balance += split.topBet * 2;
                     gameObject.balanceTexture = renderText("Balance: $" + toStringWithPrecision(gameObject.balance), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
                 }
                 if (split.topTotal < 21 && dealer.total < 21 && split.topTotal < dealer.total) //Dealer wins
@@ -470,7 +470,7 @@ void updateQueue(SDL_Renderer* renderer)
                     textureQ.push_back(split.bottomResultTexture);
                     rectQ.push_back(split.bottomResultRect);
 
-                    gameObject.balance += gameObject.bet/2;
+                    gameObject.balance += split.bottomBet;
                     gameObject.balanceTexture = renderText("Balance: $" + toStringWithPrecision(gameObject.balance), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
                 }
                 if ((split.bottomTotal < 21 && dealer.total < 21 && split.bottomTotal > dealer.total) || (split.bottomTotal < 21 && dealer.total > 21)) //Player wins
@@ -481,7 +481,7 @@ void updateQueue(SDL_Renderer* renderer)
                     textureQ.push_back(split.bottomResultTexture);
                     rectQ.push_back(split.bottomResultRect);
 
-                    gameObject.balance += gameObject.bet;
+                    gameObject.balance += split.bottomBet * 2;
                     gameObject.balanceTexture = renderText("Balance: $" + toStringWithPrecision(gameObject.balance), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
                 }
                 if (split.bottomTotal == 21 && dealer.total != 21) //Blackjack
@@ -492,7 +492,7 @@ void updateQueue(SDL_Renderer* renderer)
                     textureQ.push_back(split.bottomResultTexture);
                     rectQ.push_back(split.bottomResultRect);
 
-                    gameObject.balance += gameObject.bet;
+                    gameObject.balance += split.bottomBet * 2;
                     gameObject.balanceTexture = renderText("Balance: $" + toStringWithPrecision(gameObject.balance), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
                 }
                 if ((split.bottomTotal < 21 && dealer.total < 21 && split.bottomTotal < dealer.total)) //Dealer wins
@@ -1044,11 +1044,11 @@ void game(SDL_Renderer* renderer)
                                         {
                                             case 0:
                                                 gameObject.numOptions = 3;
-                                                gameObject.balance -= gameObject.bet/2;
+                                                gameObject.balance -= split.topBet;
                                                 gameObject.balanceTexture = renderText("Balance: " + toStringWithPrecision(gameObject.balance, 2), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
-                                                gameObject.bet *= 1.5;
+                                                gameObject.bet += split.topBet;
+                                                split.topBet *= 2;
                                                 gameObject.betTexture = renderText("Bet: " + toStringWithPrecision(gameObject.bet, 2), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
-                                                split.topdouble = true;
                                                 functionNumber = 8;
                                                 hit(player);
                                                 SDL_DestroyTexture(split.topTotalTexture);
@@ -1064,21 +1064,11 @@ void game(SDL_Renderer* renderer)
                                                 split.selectorRect = {625, 410 + (split.selectorPos * 130), 20, 50};
                                             break;
                                             case 1:
-                                                if (split.topdouble)
-                                                {
-                                                gameObject.balance -= (gameObject.bet/3);
+                                                gameObject.balance -= (split.bottomBet);
                                                 gameObject.balanceTexture = renderText("Balance: " + toStringWithPrecision(gameObject.balance, 2), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
-                                                gameObject.bet += (gameObject.bet/3);
+                                                gameObject.bet += (split.bottomBet);
+                                                split.bottomBet *= 2;
                                                 gameObject.betTexture = renderText("Bet: " + toStringWithPrecision(gameObject.bet, 2), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
-                                                split.topdouble = false;
-                                                }
-                                                else if (!split.topdouble)
-                                                {
-                                                    gameObject. balance -= (gameObject.bet/2);
-                                                    gameObject.balanceTexture = renderText("Balance: " + toStringWithPrecision(gameObject.balance, 2), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
-                                                    gameObject.bet += (gameObject.bet/2);
-                                                    gameObject.betTexture = renderText("Bet: " + toStringWithPrecision(gameObject.bet, 2), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
-                                                }
                                                 functionNumber = 6;
                                                 gameObject.numOptions = 1;
                                                 split.bottomResult = true;
@@ -1097,9 +1087,13 @@ void game(SDL_Renderer* renderer)
                                                 gameObject.selectorPos = 5;
                                                 gameObject.selectorRect = {75, 300 + (gameObject.selectorPos * 50), 20, 50};
                                                 split.splitstand = true;
+                                                gameObject.playerTurn = false;
                                                 while(dealer.total < 17)
                                                 {
+                                                    std::cout << "This part ran" << std::endl;
                                                    hit(dealer);
+                                                   SDL_DestroyTexture(dealer.totalTexture);
+                                                   dealer.totalTexture = renderText("Total: " + toStringWithPrecision(dealer.total, 0), "C:/Windows/Fonts/arial.ttf", gameObject.white, 14, renderer);
                                                 }
                                             break;
                                         }
@@ -1154,6 +1148,8 @@ void game(SDL_Renderer* renderer)
                                 textureQ.clear();
                                 rectQ.clear();
 
+                                split.topBet = gameObject.bet;
+                                split.bottomBet = gameObject.bet;
                                 functionNumber = 8;
                                 gameObject.balance -= gameObject.bet;
                                 gameObject.bet *= 2;
@@ -1560,6 +1556,22 @@ void playAgain(SDL_Renderer* renderer)
             player.total = player.values[0] + player.values[1];
         }
 
+        //Dealer draws an ace or multiple aces
+        if (dealer.values[0] == dealer.values[1]  && dealer.values[0] == 1)
+        {
+            dealer.values[0] = 11;
+            dealer.total = dealer.values[0] + dealer.values[1];
+        }
+        else if (dealer.values[0] == 1 && (11 + dealer.values[1]) <= 21)
+        {
+            dealer.values[0] = 11;
+            dealer.total = dealer.values[0] + dealer.values[1];
+        }
+        else if (dealer.values[1] == 1 && (11 + dealer.values[0]) <= 21)
+        {
+            dealer.values[1] = 11;
+            dealer.total = dealer.values[0] + dealer.values[1];
+        }
 
     }
 
@@ -1581,53 +1593,64 @@ void playAgain(SDL_Renderer* renderer)
             }
         }
 
-        if (!gameObject.splitbool || split.splitstand)
+        if (!gameObject.splitbool || split.splitstand) //REGULAR HITTING
         {
-        player_dealer.total += deck.values[index];
-        gameObject.newCards += 1;
-        player_dealer.values.push_back(deck.values[index]);
-        player_dealer.names.push_back(deck.names[index]);
-        player_dealer.textures.push_back(deck.textures[index]);
-
-        if (gameObject.playerTurn == true && gameObject.splitbool == false)
-        {
-            if (player_dealer.values.size() > 5) 
-            {   
-                for (int i = 0; i < 5; i++) 
-                {
-                    player_dealer.rects[i] = {500 + (i * 75), 380, 73, 125};
-                }
-                for (int j = 0; j < player_dealer.values.size() - 5; j++)
-                {
-                    player_dealer.rects[j + 5] = {500 + (j * 75), 510, 73, 125};
-                }
-            }
-            else
-            {
-                player_dealer.rects.push_back({static_cast<int>(500 + ((player_dealer.values.size() - 1) * 150)), 380, 145, 250});
-            }
-        }
-        else if (gameObject.playerTurn == false)    
-        {
+            std::cout << "0" << std::endl;
            
-            if (player_dealer.values.size() > 5) 
-            {   
-                for (int i = 0; i < 5; i++) 
-                {
-                    player_dealer.rects[i] = {500 + (i * 75), 80, 73, 125};
-                }
+            std::cout << "player total: " << player_dealer.total << std::endl;
+            gameObject.newCards += 1;
+            player_dealer.values.push_back(deck.values[index]);
+            player_dealer.names.push_back(deck.names[index]);
+            player_dealer.textures.push_back(deck.textures[index]);
 
-                for (int j = 0; j < player_dealer.values.size() - 5; j++)
-                {
-                    player_dealer.rects[j + 5] = {500 + (j * 75), 210, 73 , 125};
-                }
-            }
-            else 
-            { 
-                player_dealer.rects.push_back({static_cast<int>(500 + ((player_dealer.values.size() - 1) * 150)), 80, 145, 250});
+            if (deck.values[index] == 1 && (11 + player_dealer.total <= 21))
+            {
+                player_dealer.values[player_dealer.values.size() - 1] = 11;
+                deck.values[index] = 11;
             }
             
-        }
+            player_dealer.total += deck.values[index];
+
+            if (gameObject.playerTurn == true && gameObject.splitbool == false)  //PLAYER
+            {
+                std::cout << "1" << std::endl;
+                if (player_dealer.values.size() > 5) 
+                {   
+                    for (int i = 0; i < 5; i++) 
+                    {
+                        player_dealer.rects[i] = {500 + (i * 75), 380, 73, 125};
+                    }
+                    for (int j = 0; j < player_dealer.values.size() - 5; j++)
+                    {
+                        player_dealer.rects[j + 5] = {500 + (j * 75), 510, 73, 125};
+                    }
+                }
+                else
+                {
+                    player_dealer.rects.push_back({static_cast<int>(500 + ((player_dealer.values.size() - 1) * 150)), 380, 145, 250});
+                }
+            }
+            else if (gameObject.playerTurn == false)  //DEALER
+            {
+                std::cout << "2" << std::endl;
+                if (player_dealer.values.size() > 5) 
+                {   
+                    for (int i = 0; i < 5; i++) 
+                    {
+                        player_dealer.rects[i] = {500 + (i * 75), 80, 73, 125};
+                    }
+
+                    for (int j = 0; j < player_dealer.values.size() - 5; j++)
+                    {
+                        player_dealer.rects[j + 5] = {500 + (j * 75), 210, 73 , 125};
+                    }
+                }
+                else 
+                { 
+                    player_dealer.rects.push_back({static_cast<int>(500 + ((player_dealer.values.size() - 1) * 150)), 80, 145, 250});
+                }
+            
+            }
         }
 
 
