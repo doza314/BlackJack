@@ -1,2 +1,0 @@
-all:
-	g++ src/open.cpp src/resource.o -o BlackJack.exe
