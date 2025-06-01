@@ -1,2 +1,2 @@
 all: 
-	g++ Blackjack.cpp Blackjack_functions.cpp -o BlackJack -I src/include/SDL2 -L src/lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf -lSDL2_image -lSDL2_mixer
+	g++ src/Blackjack.cpp src/Blackjack_functions.cpp src/resource.o -o bin/BlackJack_v1.0.1.exe -I include/SDL2 -L lib  -lSDL2main -lSDL2 -lSDL2_ttf -lSDL2_image -lSDL2_mixer

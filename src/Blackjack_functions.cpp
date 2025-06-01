@@ -67,7 +67,7 @@
     //Creates a card surface
     SDL_Surface* cardSurface(std::string cardName) 
     {
-        std::string path = "cards/" + cardName + ".png";
+        std::string path = "../src/cards/" + cardName + ".png";
         SDL_Surface* surface = IMG_Load(path.c_str());
         return surface;
     }
